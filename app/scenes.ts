@@ -26,7 +26,7 @@ export const scenes: Record<string, SceneConfig> = {
     },
     garden: {
         title: "Garden",
-        url: "https://antimatter15.com/splat/garden.splat",
+        url: "https://huggingface.co/datasets/nerfbaselines/nerfbaselines-supplementary/resolve/main/gaussian-splatting/mipnerf360/garden_demo/scene.ksplat",
         cameraUp: [0, -1, -0.54],
         initialCameraPosition: [-3.15634, -0.16946, -0.51552],
         initialCameraLookAt: [1.52976, 2.27776, 1.65898],
@@ -34,15 +34,15 @@ export const scenes: Record<string, SceneConfig> = {
     },
     truck: {
         title: "Truck",
-        url: "https://antimatter15.com/splat/truck.splat",
+        url: "https://huggingface.co/datasets/nerfbaselines/nerfbaselines-supplementary/resolve/main/gaussian-splatting/tanksandtemples/truck_demo/scene.ksplat",
         cameraUp: [0, -1, -0.17],
         initialCameraPosition: [-5, -1, -1],
         initialCameraLookAt: [-1.72477, 0.05395, -0.00147],
         sphericalHarmonicsDegree: 2,
     },
-    plush: {
-        title: "Plush",
-        url: "https://antimatter15.com/splat/plush.splat",
+    train: {
+        title: "Train",
+        url: "https://huggingface.co/datasets/nerfbaselines/nerfbaselines-supplementary/resolve/main/gaussian-splatting/tanksandtemples/train_demo/scene.ksplat",
         cameraUp: [0, -1, 0],
         initialCameraPosition: [0, 2, 5],
         initialCameraLookAt: [0, 0, 0],

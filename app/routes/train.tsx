@@ -5,15 +5,15 @@ import { scenes } from "~/scenes";
 
 export const meta: MetaFunction = () => {
     return [
-        { title: `${scenes.plush.title} - 3D Gaussian Splat` },
-        { name: "description", content: `View the ${scenes.plush.title} 3D Gaussian Splat scene` },
+        { title: `${scenes.train.title} - 3D Gaussian Splat` },
+        { name: "description", content: `View the ${scenes.train.title} 3D Gaussian Splat scene` },
     ];
 };
 
-export default function Plush() {
+export default function Train() {
     return (
         <ClientOnly fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
-            {() => <SplatViewer scene={scenes.plush} />}
+            {() => <SplatViewer scene={scenes.train} />}
         </ClientOnly>
     );
 }
