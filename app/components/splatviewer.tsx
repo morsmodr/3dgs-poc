@@ -1,25 +1,37 @@
 import * as GaussianSplats3D from "@mkkellogg/gaussian-splats-3d";
-import * as THREE from "three";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import type { SceneConfig } from "~/scenes";
 
-export default function SplatViewer () {
-    let viewer: any = null;
+interface SplatViewerProps {
+    scene: SceneConfig;
+}
+
+export default function SplatViewer({ scene }: SplatViewerProps) {
+    const viewerRef = useRef<any>(null);
+
     useEffect(() => {
-        viewer = new GaussianSplats3D.Viewer({
-            // values copied from https://github.com/mkkellogg/GaussianSplats3D/blob/main/demo/bonsai.html
-            'cameraUp': [0.01933, -0.75830, -0.65161],
-            'initialCameraPosition': [1.54163, 2.68515, -6.37228],
-            'initialCameraLookAt': [0.45622, 1.95338, 1.51278],
-            'sphericalHarmonicsDegree': 2
+        viewerRef.current = new GaussianSplats3D.Viewer({
+            cameraUp: scene.cameraUp,
+            initialCameraPosition: scene.initialCameraPosition,
+            initialCameraLookAt: scene.initialCameraLookAt,
+            sphericalHarmonicsDegree: scene.sphericalHarmonicsDegree ?? 2,
+        });
+
+        viewerRef.current
+            .addSplatScene(scene.url, {
+                progressiveLoad: true,
+                showLoadingUI: true,
+            })
+            .then(() => {
+                viewerRef.current.start();
             });
-        viewer.addSplatScene("/garden_high.ksplat", {
-            'progressiveLoad': false,
-            'showLoadingUI': true,
-        })
-        .then(() => {
-            viewer.start();
-            });
-    }, []);
+
+        return () => {
+            if (viewerRef.current) {
+                viewerRef.current.dispose();
+            }
+        };
+    }, [scene]);
 
     return null;
 }
