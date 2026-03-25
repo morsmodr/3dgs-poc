@@ -11,6 +11,14 @@ const viteDevServer =
       );
 
 const app = express();
+
+// COOP/COEP headers for SharedArrayBuffer support (needed for Spark/WebGL)
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+  next();
+});
+
 app.use(
     viteDevServer
       ? viteDevServer.middlewares

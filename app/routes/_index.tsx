@@ -42,13 +42,14 @@ export default function Index() {
                     <p>
                         Powered by{" "}
                         <a
-                            href="https://github.com/mkkellogg/GaussianSplats3D"
+                            href="https://sparkjs.dev/"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-400 hover:underline"
                         >
-                            GaussianSplats3D
+                            Spark
                         </a>
+                        {" "}by World Labs
                     </p>
                 </footer>
             </div>

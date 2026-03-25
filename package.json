@@ -11,22 +11,25 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@mkkellogg/gaussian-splats-3d": "^0.4.2",
+    "@react-three/drei": "^9.117.0",
+    "@react-three/fiber": "^8.17.0",
     "@remix-run/express": "^2.10.0",
     "@remix-run/node": "^2.10.0",
     "@remix-run/react": "^2.10.0",
+    "@sparkjsdev/spark": "sparkjsdev/spark#v2.0.0-preview",
     "cross-env": "^7.0.3",
     "express": "^4.19.2",
     "isbot": "^4.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "remix-utils": "^7.6.0",
-    "three": "^0.166.0"
+    "three": "^0.180.0"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.10.0",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
+    "@types/three": "^0.180.0",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
     "autoprefixer": "^10.4.19",
