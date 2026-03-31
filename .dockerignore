@@ -1,0 +1,46 @@
+# Dependencies
+node_modules
+
+# Build output (rebuilt in container)
+build
+.react-router
+
+# Git
+.git
+.gitignore
+
+# Environment files (pass via docker run -e)
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Data (runtime generated)
+data
+
+# Development files
+*.md
+!README.md
+docs
+
+# TypeScript cache
+*.tsbuildinfo
+
+# ESLint cache
+.eslintcache
+
+# Cursor/editor config
+.cursor
