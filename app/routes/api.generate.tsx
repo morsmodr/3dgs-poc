@@ -1,4 +1,4 @@
-import { json, type ActionFunctionArgs } from "@remix-run/node";
+import { data, type ActionFunctionArgs } from "react-router";
 import {
   generateWorld,
   type GenerateWorldRequest,
@@ -17,18 +17,18 @@ interface GenerateRequestBody {
 
 export async function action({ request }: ActionFunctionArgs) {
   if (request.method !== "POST") {
-    return json({ error: "Method not allowed" }, { status: 405 });
+    return data({ error: "Method not allowed" }, { status: 405 });
   }
 
   try {
     const body: GenerateRequestBody = await request.json();
 
     if (!body.prompt && body.promptType !== "image") {
-      return json({ error: "Prompt is required" }, { status: 400 });
+      return data({ error: "Prompt is required" }, { status: 400 });
     }
 
     if (body.promptType === "image" && !body.imageBase64) {
-      return json(
+      return data(
         { error: "Image data is required for image prompts" },
         { status: 400 }
       );
@@ -75,7 +75,7 @@ export async function action({ request }: ActionFunctionArgs) {
       model,
     });
 
-    return json({
+    return data({
       success: true,
       operationId: response.operation_id,
       worldId: storedWorld.id,
@@ -83,7 +83,7 @@ export async function action({ request }: ActionFunctionArgs) {
     });
   } catch (error) {
     console.error("Generate world error:", error);
-    return json(
+    return data(
       {
         error: error instanceof Error ? error.message : "Failed to generate world",
       },

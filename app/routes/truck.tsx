@@ -1,4 +1,4 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { MetaFunction } from "react-router";
 import { ClientOnly } from "remix-utils/client-only";
 import SplatViewer from "~/components/splatviewer";
 import { scenes } from "~/scenes";

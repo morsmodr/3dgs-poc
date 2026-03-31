@@ -1,5 +1,5 @@
-import type { MetaFunction } from "@remix-run/node";
-import { Link, useNavigate } from "@remix-run/react";
+import type { MetaFunction } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useState, useRef, useEffect, useCallback } from "react";
 import type { MarbleModel } from "~/lib/marble-client";
 

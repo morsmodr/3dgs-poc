@@ -1,4 +1,4 @@
-import { json, type LoaderFunctionArgs } from "@remix-run/node";
+import { data, type LoaderFunctionArgs } from "react-router";
 import { getOperationStatus } from "~/lib/marble-client";
 import {
   getWorldByOperationId,
@@ -10,7 +10,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
   const { operationId } = params;
 
   if (!operationId) {
-    return json({ error: "Operation ID is required" }, { status: 400 });
+    return data({ error: "Operation ID is required" }, { status: 400 });
   }
 
   try {
@@ -23,7 +23,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
           response.error.message || "Unknown error"
         );
 
-        return json({
+        return data({
           operationId,
           done: true,
           success: false,
@@ -37,7 +37,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
           response.response
         );
 
-        return json({
+        return data({
           operationId,
           done: true,
           success: true,
@@ -59,7 +59,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
         ? response.metadata.status
         : "PENDING";
 
-    return json({
+    return data({
       operationId,
       done: false,
       progress,
@@ -67,7 +67,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
     });
   } catch (error) {
     console.error("Get operation status error:", error);
-    return json(
+    return data(
       {
         error:
           error instanceof Error ? error.message : "Failed to get operation status",

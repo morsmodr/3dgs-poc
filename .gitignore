@@ -3,6 +3,7 @@ package-lock.json
 
 /.cache
 /build
+.react-router/
 .env
 .env.*
 !.env.example
