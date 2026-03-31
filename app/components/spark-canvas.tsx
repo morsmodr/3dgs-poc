@@ -1,4 +1,4 @@
-import { Canvas, useThree, useFrame } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
@@ -45,7 +45,6 @@ function SparkScene({ url, cameraPosition, cameraLookAt, cameraUp }: SparkSceneP
                 });
                 scene.add(sparkRenderer);
 
-                // Use SplatLoader for progress tracking
                 const loader = new spark.SplatLoader();
                 const splats = await loader.loadAsync(url, (event: ProgressEvent) => {
                     if (mounted && event.lengthComputable) {
@@ -126,12 +125,31 @@ function SparkScene({ url, cameraPosition, cameraLookAt, cameraUp }: SparkSceneP
     );
 }
 
+const DEFAULT_CAMERA_POSITION: [number, number, number] = [0, 2, 5];
+const DEFAULT_CAMERA_UP: [number, number, number] = [0, -1, 0];
+const DEFAULT_CAMERA_LOOK_AT: [number, number, number] = [0, 0, 0];
+
 interface SparkCanvasProps {
-    scene: SceneConfig;
     className?: string;
+    scene?: SceneConfig;
+    url?: string;
+    cameraPosition?: [number, number, number];
+    cameraUp?: [number, number, number];
+    cameraLookAt?: [number, number, number];
 }
 
-export default function SparkCanvas({ scene, className }: SparkCanvasProps) {
+export default function SparkCanvas(props: SparkCanvasProps) {
+    const { className, scene } = props;
+    
+    const url = scene?.url ?? props.url;
+    if (!url) {
+        throw new Error("SparkCanvas requires either a scene or url prop");
+    }
+    
+    const cameraPosition = scene?.initialCameraPosition ?? props.cameraPosition ?? DEFAULT_CAMERA_POSITION;
+    const cameraUp = scene?.cameraUp ?? props.cameraUp ?? DEFAULT_CAMERA_UP;
+    const cameraLookAt = scene?.initialCameraLookAt ?? props.cameraLookAt ?? DEFAULT_CAMERA_LOOK_AT;
+
     return (
         <div className={className ?? "w-full h-screen"}>
             <Canvas
@@ -144,16 +162,16 @@ export default function SparkCanvas({ scene, className }: SparkCanvasProps) {
                     fov: 75,
                     near: 0.1,
                     far: 1000,
-                    position: scene.initialCameraPosition,
-                    up: new THREE.Vector3(...scene.cameraUp),
+                    position: cameraPosition,
+                    up: new THREE.Vector3(...cameraUp),
                 }}
             >
                 <color attach="background" args={["#1a1a2e"]} />
                 <SparkScene
-                    url={scene.url}
-                    cameraPosition={scene.initialCameraPosition}
-                    cameraLookAt={scene.initialCameraLookAt}
-                    cameraUp={scene.cameraUp}
+                    url={url}
+                    cameraPosition={cameraPosition}
+                    cameraLookAt={cameraLookAt}
+                    cameraUp={cameraUp}
                 />
             </Canvas>
         </div>

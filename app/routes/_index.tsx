@@ -189,7 +189,7 @@ export default function Index() {
                 key={key}
                 id={key}
                 title={scene.title}
-                linkTo={`/${key}`}
+                linkTo={`/world/${key}`}
                 isSample
               />
             ))}
