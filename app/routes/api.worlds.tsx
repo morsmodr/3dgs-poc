@@ -1,5 +1,6 @@
 import { data, type LoaderFunctionArgs, type ActionFunctionArgs } from "react-router";
 import { getAllWorlds, getWorldById, deleteWorld } from "~/lib/worlds-store";
+import { proxyUrl } from "~/lib/proxy-url.server";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
@@ -12,7 +13,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
       if (!world) {
         return data({ error: "World not found" }, { status: 404 });
       }
-      return data({ world });
+      const transformedWorld = {
+        ...world,
+        panoUrl: proxyUrl(world.panoUrl),
+        thumbnailUrl: proxyUrl(world.thumbnailUrl),
+      };
+      return data({ world: transformedWorld });
     }
 
     let worlds = await getAllWorlds();
@@ -21,7 +27,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
       worlds = worlds.filter((w) => w.status === status);
     }
 
-    return data({ worlds });
+    const transformedWorlds = worlds.map((w) => ({
+      ...w,
+      panoUrl: proxyUrl(w.panoUrl),
+      thumbnailUrl: proxyUrl(w.thumbnailUrl),
+    }));
+
+    return data({ worlds: transformedWorlds });
   } catch (error) {
     console.error("Get worlds error:", error);
     return data(

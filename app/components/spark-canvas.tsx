@@ -3,6 +3,8 @@ import { OrbitControls, Html } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import type { SceneConfig } from "~/scenes";
+import { useWebGLContext } from "~/hooks/use-webgl-context";
+import { WebGLContextLost } from "~/components/webgl-context-lost";
 
 interface SparkSceneProps {
     url: string;
@@ -140,6 +142,7 @@ interface SparkCanvasProps {
 
 export default function SparkCanvas(props: SparkCanvasProps) {
     const { className, scene } = props;
+    const { contextLost, handleCreated } = useWebGLContext();
     
     const url = scene?.url ?? props.url;
     if (!url) {
@@ -149,6 +152,10 @@ export default function SparkCanvas(props: SparkCanvasProps) {
     const cameraPosition = scene?.initialCameraPosition ?? props.cameraPosition ?? DEFAULT_CAMERA_POSITION;
     const cameraUp = scene?.cameraUp ?? props.cameraUp ?? DEFAULT_CAMERA_UP;
     const cameraLookAt = scene?.initialCameraLookAt ?? props.cameraLookAt ?? DEFAULT_CAMERA_LOOK_AT;
+
+    if (contextLost) {
+        return <WebGLContextLost className={className} />;
+    }
 
     return (
         <div className={className ?? "w-full h-screen"}>
@@ -165,6 +172,7 @@ export default function SparkCanvas(props: SparkCanvasProps) {
                     position: cameraPosition,
                     up: new THREE.Vector3(...cameraUp),
                 }}
+                onCreated={handleCreated}
             >
                 <color attach="background" args={["#1a1a2e"]} />
                 <SparkScene

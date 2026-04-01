@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { useState } from "react";
+import { ClientOnly } from "remix-utils/client-only";
 
 interface WorldCardProps {
   id: string;
@@ -167,9 +168,13 @@ export default function WorldCard({
 
           <div className="flex items-center justify-between">
             {createdAt && (
-              <span className="text-xs text-gray-500">
-                {formatRelativeTime(createdAt)}
-              </span>
+              <ClientOnly fallback={<span className="text-xs text-gray-500">--</span>}>
+                {() => (
+                  <span className="text-xs text-gray-500">
+                    {formatRelativeTime(createdAt)}
+                  </span>
+                )}
+              </ClientOnly>
             )}
             <span className="text-blue-400 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity translate-x-0 group-hover:translate-x-1 transition-transform">
               View &rarr;

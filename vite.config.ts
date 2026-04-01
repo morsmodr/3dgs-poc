@@ -21,8 +21,8 @@ export default defineConfig({
     tsconfigPaths(),
   ],
   optimizeDeps: {
-    include: ["@sparkjsdev/spark", "three", "detect-gpu", "@react-three/drei", "@react-three/fiber"],
-    exclude: [],
+    include: ["three", "detect-gpu", "@react-three/drei", "@react-three/fiber"],
+    exclude: ["@sparkjsdev/spark"],
     esbuildOptions: {
       target: "esnext",
     },

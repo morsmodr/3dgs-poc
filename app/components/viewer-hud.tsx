@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router";
+import { ClientOnly } from "remix-utils/client-only";
 
 interface ViewerHUDProps {
   title: string;
@@ -147,9 +148,13 @@ export default function ViewerHUD({
                 </span>
               )}
               {createdAt && (
-                <span className="text-xs text-gray-500">
-                  {formatRelativeTime(createdAt)}
-                </span>
+                <ClientOnly fallback={<span className="text-xs text-gray-500">--</span>}>
+                  {() => (
+                    <span className="text-xs text-gray-500">
+                      {formatRelativeTime(createdAt)}
+                    </span>
+                  )}
+                </ClientOnly>
               )}
             </div>
 
