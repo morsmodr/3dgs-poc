@@ -27,3 +27,6 @@ npm-debug.log*
 
 # Generated data
 /data
+
+# Internal roadmap (not for public repo)
+roadmap.md

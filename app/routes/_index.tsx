@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type { MetaFunction } from "react-router";
 import { Link } from "react-router";
 import { scenes } from "~/scenes";
@@ -87,24 +87,45 @@ export default function Index() {
   const [worlds, setWorlds] = useState<StoredWorld[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const fetchWorlds = useCallback(async () => {
+    try {
+      const res = await fetch("/api/worlds?status=completed");
+      if (!res.ok) {
+        throw new Error("Failed to fetch worlds");
+      }
+      const data = await res.json();
+      setWorlds(data.worlds || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load worlds");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    async function fetchWorlds() {
-      try {
-        const res = await fetch("/api/worlds?status=completed");
-        if (!res.ok) {
-          throw new Error("Failed to fetch worlds");
-        }
-        const data = await res.json();
-        setWorlds(data.worlds || []);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load worlds");
-      } finally {
-        setLoading(false);
-      }
-    }
     fetchWorlds();
-  }, []);
+  }, [fetchWorlds]);
+
+  const handleDelete = async (id: string) => {
+    setDeletingId(id);
+    try {
+      const res = await fetch("/api/worlds", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      if (!res.ok) {
+        throw new Error("Failed to delete world");
+      }
+      setWorlds((prev) => prev.filter((w) => w.id !== id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete world");
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const sampleScenes = Object.entries(scenes);
 
@@ -170,6 +191,8 @@ export default function Index() {
                   model={world.model}
                   createdAt={world.createdAt}
                   linkTo={`/world/${world.id}`}
+                  onDelete={handleDelete}
+                  isDeleting={deletingId === world.id}
                 />
               ))
             )}
