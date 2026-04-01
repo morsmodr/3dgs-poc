@@ -127,7 +127,9 @@ function SparkScene({ url, cameraPosition, cameraLookAt, cameraUp }: SparkSceneP
     );
 }
 
-const DEFAULT_CAMERA_POSITION: [number, number, number] = [0, 2, 5];
+// Default camera for Marble-generated worlds: splats are centered at origin in OpenCV coords (+y down, +z forward)
+// Position camera slightly back from origin, looking forward into the scene
+const DEFAULT_CAMERA_POSITION: [number, number, number] = [0, 0, -0.5];
 const DEFAULT_CAMERA_UP: [number, number, number] = [0, -1, 0];
 const DEFAULT_CAMERA_LOOK_AT: [number, number, number] = [0, 0, 0];
 

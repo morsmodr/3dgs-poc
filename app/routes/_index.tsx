@@ -185,9 +185,9 @@ export default function Index() {
                 <WorldCard
                   key={world.id}
                   id={world.id}
-                  title={world.caption || world.prompt.slice(0, 50)}
+                  title={world.prompt.slice(0, 60)}
                   thumbnail={world.panoUrl || world.thumbnailUrl}
-                  prompt={world.prompt}
+                  prompt={world.caption}
                   model={world.model}
                   createdAt={world.createdAt}
                   linkTo={`/world/${world.id}`}

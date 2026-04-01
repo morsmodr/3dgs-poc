@@ -56,7 +56,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
   return data<WorldData>({
     id: world.id,
-    title: world.caption || world.prompt.slice(0, 50),
+    title: world.caption || world.prompt.slice(0, 60),
     prompt: world.prompt,
     model: world.model,
     splatUrl: world.splatUrl,

@@ -49,6 +49,7 @@ export default function ViewerHUD({
 }: ViewerHUDProps) {
   const navigate = useNavigate();
   const [visible, setVisible] = useState(true);
+  const [expanded, setExpanded] = useState(false);
 
   const handleBack = useCallback(() => {
     navigate("/");
@@ -123,16 +124,17 @@ export default function ViewerHUD({
         </svg>
       </button>
 
-      {/* Info panel */}
+      {/* Info panel - pointer-events-none on gradient so it doesn't block camera controls */}
       <div
-        className={`fixed bottom-0 left-0 right-0 z-40 transition-all duration-300 ${
+        className={`fixed bottom-0 left-0 right-0 z-40 transition-all duration-300 pointer-events-none ${
           visible
             ? "translate-y-0 opacity-100"
-            : "translate-y-full opacity-0 pointer-events-none"
+            : "translate-y-full opacity-0"
         }`}
       >
         <div className="bg-gradient-to-t from-gray-900 via-gray-900/95 to-transparent pt-16 pb-6 px-6">
-          <div className="max-w-3xl">
+          {/* Re-enable pointer events only for the content area */}
+          <div className="max-w-3xl pointer-events-auto">
             {/* Badges row */}
             <div className="flex items-center gap-2 mb-2">
               {isSample && (
@@ -158,12 +160,28 @@ export default function ViewerHUD({
               )}
             </div>
 
-            {/* Title */}
-            <h1 className="text-2xl font-bold text-white mb-2">{title}</h1>
+            {/* Title - collapsible with 3-line clamp, smaller font */}
+            <div className="mb-2">
+              <p
+                className={`text-sm text-white ${
+                  expanded ? "" : "line-clamp-3"
+                }`}
+              >
+                {title}
+              </p>
+              {title.length > 150 && (
+                <button
+                  onClick={() => setExpanded((e) => !e)}
+                  className="text-xs text-blue-400 hover:text-blue-300 mt-1 transition-colors"
+                >
+                  {expanded ? "Show less" : "Show more"}
+                </button>
+              )}
+            </div>
 
             {/* Prompt */}
             {prompt && (
-              <p className="text-gray-400 text-sm line-clamp-2 max-w-2xl">
+              <p className="text-gray-400 text-xs line-clamp-2 max-w-2xl">
                 {prompt}
               </p>
             )}
