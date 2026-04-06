@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router";
 import { ClientOnly } from "remix-utils/client-only";
+import type { CameraPath, CameraPathStatus } from "~/lib/camera-path";
+import { formatCameraPathDuration } from "~/lib/camera-path";
 
 interface ViewerHUDProps {
   title: string;
@@ -8,6 +10,13 @@ interface ViewerHUDProps {
   model?: "Marble 0.1-mini" | "Marble 0.1-plus";
   createdAt?: string;
   isSample?: boolean;
+  cameraPath?: CameraPath | null;
+  cameraPathStatus?: CameraPathStatus;
+  onStartCameraPathRecording?: () => void;
+  onStopCameraPathRecording?: () => void;
+  onPlayCameraPath?: () => void;
+  onStopCameraPathPlayback?: () => void;
+  onClearCameraPath?: () => void;
 }
 
 function formatRelativeTime(isoString: string): string {
@@ -46,14 +55,62 @@ export default function ViewerHUD({
   model,
   createdAt,
   isSample = false,
+  cameraPath,
+  cameraPathStatus,
+  onStartCameraPathRecording,
+  onStopCameraPathRecording,
+  onPlayCameraPath,
+  onStopCameraPathPlayback,
+  onClearCameraPath,
 }: ViewerHUDProps) {
   const navigate = useNavigate();
   const [visible, setVisible] = useState(true);
   const [expanded, setExpanded] = useState(false);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
+
+  const pathStatus = cameraPathStatus ?? {
+    isRecording: false,
+    isPlaying: false,
+    keyframeCount: 0,
+    durationMs: 0,
+    error: null,
+  };
+  const hasCameraPath = Boolean(cameraPath && cameraPath.keyframes.length > 1);
 
   const handleBack = useCallback(() => {
     navigate("/");
   }, [navigate]);
+
+  const handleCopyCameraPath = useCallback(async () => {
+    if (!cameraPath) {
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(cameraPath, null, 2));
+      setCopyState("copied");
+    } catch {
+      setCopyState("error");
+    }
+  }, [cameraPath]);
+
+  const handleDownloadCameraPath = useCallback(() => {
+    if (!cameraPath) {
+      return;
+    }
+
+    const blob = new Blob([JSON.stringify(cameraPath, null, 2)], {
+      type: "application/json",
+    });
+    const objectUrl = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = objectUrl;
+    anchor.download = `${title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-camera-path.json`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(objectUrl);
+  }, [cameraPath, title]);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -63,11 +120,43 @@ export default function ViewerHUD({
       if (e.key === "h" || e.key === "H") {
         setVisible((v) => !v);
       }
+      if (e.key.toLowerCase() === "r" && e.shiftKey) {
+        if (pathStatus.isRecording) {
+          onStopCameraPathRecording?.();
+        } else {
+          onStartCameraPathRecording?.();
+        }
+      }
+      if (e.key === "p" || e.key === "P") {
+        if (pathStatus.isPlaying) {
+          onStopCameraPathPlayback?.();
+        } else if (hasCameraPath) {
+          onPlayCameraPath?.();
+        }
+      }
     }
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleBack]);
+  }, [
+    handleBack,
+    hasCameraPath,
+    onPlayCameraPath,
+    onStartCameraPathRecording,
+    onStopCameraPathPlayback,
+    onStopCameraPathRecording,
+    pathStatus.isPlaying,
+    pathStatus.isRecording,
+  ]);
+
+  useEffect(() => {
+    if (copyState === "idle") {
+      return;
+    }
+
+    const timeout = window.setTimeout(() => setCopyState("idle"), 2500);
+    return () => window.clearTimeout(timeout);
+  }, [copyState]);
 
   const badge = model ? getModelBadge(model) : null;
 
@@ -186,6 +275,111 @@ export default function ViewerHUD({
               </p>
             )}
 
+            <div className="mt-4 max-w-3xl rounded-xl border border-gray-700/60 bg-gray-900/60 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-medium text-white">Camera path authoring</p>
+                  <p className="text-xs text-gray-400">
+                    Record an orbit, play it back, then export the path JSON.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {pathStatus.isRecording ? (
+                    <button
+                      onClick={onStopCameraPathRecording}
+                      className="rounded-lg bg-red-500/20 px-3 py-2 text-xs font-medium text-red-200 transition-colors hover:bg-red-500/30"
+                    >
+                      Stop recording
+                    </button>
+                  ) : (
+                    <button
+                      onClick={onStartCameraPathRecording}
+                      className="rounded-lg bg-blue-500/20 px-3 py-2 text-xs font-medium text-blue-200 transition-colors hover:bg-blue-500/30"
+                    >
+                      Record path
+                    </button>
+                  )}
+
+                  {pathStatus.isPlaying ? (
+                    <button
+                      onClick={onStopCameraPathPlayback}
+                      className="rounded-lg bg-gray-700 px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-gray-600"
+                    >
+                      Stop playback
+                    </button>
+                  ) : (
+                    <button
+                      onClick={onPlayCameraPath}
+                      disabled={!hasCameraPath}
+                      className={`rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
+                        hasCameraPath
+                          ? "bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/30"
+                          : "cursor-not-allowed bg-gray-800 text-gray-500"
+                      }`}
+                    >
+                      Play path
+                    </button>
+                  )}
+
+                  <button
+                    onClick={handleCopyCameraPath}
+                    disabled={!hasCameraPath}
+                    className={`rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
+                      hasCameraPath
+                        ? "bg-gray-700 text-white hover:bg-gray-600"
+                        : "cursor-not-allowed bg-gray-800 text-gray-500"
+                    }`}
+                  >
+                    {copyState === "copied"
+                      ? "Copied JSON"
+                      : copyState === "error"
+                        ? "Copy failed"
+                        : "Copy JSON"}
+                  </button>
+
+                  <button
+                    onClick={handleDownloadCameraPath}
+                    disabled={!hasCameraPath}
+                    className={`rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
+                      hasCameraPath
+                        ? "bg-gray-700 text-white hover:bg-gray-600"
+                        : "cursor-not-allowed bg-gray-800 text-gray-500"
+                    }`}
+                  >
+                    Download JSON
+                  </button>
+
+                  <button
+                    onClick={onClearCameraPath}
+                    disabled={!hasCameraPath && !pathStatus.isRecording}
+                    className={`rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
+                      hasCameraPath || pathStatus.isRecording
+                        ? "bg-gray-700 text-white hover:bg-gray-600"
+                        : "cursor-not-allowed bg-gray-800 text-gray-500"
+                    }`}
+                  >
+                    Clear
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-gray-400">
+                <span>{pathStatus.keyframeCount} keyframes</span>
+                <span>{formatCameraPathDuration(pathStatus.durationMs)}</span>
+                <span>
+                  {pathStatus.isRecording
+                    ? "Recording live"
+                    : hasCameraPath
+                      ? "Ready for playback"
+                      : "Record a path to export it"}
+                </span>
+              </div>
+
+              {pathStatus.error && (
+                <p className="mt-2 text-xs text-red-300">{pathStatus.error}</p>
+              )}
+            </div>
+
             {/* Keyboard hints */}
             <div className="mt-4 flex items-center gap-4 text-xs text-gray-600">
               <span>
@@ -199,6 +393,18 @@ export default function ViewerHUD({
                   Esc
                 </kbd>{" "}
                 Back to gallery
+              </span>
+              <span>
+                <kbd className="px-1.5 py-0.5 bg-gray-800 rounded text-gray-400">
+                  Shift+R
+                </kbd>{" "}
+                Record camera path
+              </span>
+              <span>
+                <kbd className="px-1.5 py-0.5 bg-gray-800 rounded text-gray-400">
+                  P
+                </kbd>{" "}
+                Play camera path
               </span>
               <span>Drag to orbit</span>
               <span>Scroll to zoom</span>

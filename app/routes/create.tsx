@@ -40,8 +40,6 @@ export default function CreatePage() {
   const [progress, setProgress] = useState(0);
   const [statusText, setStatusText] = useState("PENDING");
   const [errorMessage, setErrorMessage] = useState("");
-  const [operationId, setOperationId] = useState<string | null>(null);
-  const [worldId, setWorldId] = useState<string | null>(null);
 
   const pollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -97,7 +95,7 @@ export default function CreatePage() {
     }
   }
 
-  function startPolling(opId: string, wId: string) {
+  function startPolling(opId: string) {
     pollIntervalRef.current = setInterval(async () => {
       try {
         const res = await fetch(`/api/status/${opId}`);
@@ -173,9 +171,7 @@ export default function CreatePage() {
         return;
       }
 
-      setOperationId(data.operationId);
-      setWorldId(data.worldId);
-      startPolling(data.operationId, data.worldId);
+      startPolling(data.operationId);
     } catch {
       setErrorMessage("Failed to connect to server");
       setPageState("error");
@@ -188,8 +184,6 @@ export default function CreatePage() {
     setProgress(0);
     setStatusText("PENDING");
     setErrorMessage("");
-    setOperationId(null);
-    setWorldId(null);
   }
 
   const canSubmit =
@@ -363,6 +357,8 @@ export default function CreatePage() {
               </div>
             ) : (
               <div
+                role="button"
+                tabIndex={0}
                 onDragOver={(e) => {
                   e.preventDefault();
                   setIsDragging(true);
@@ -370,6 +366,12 @@ export default function CreatePage() {
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    fileInputRef.current?.click();
+                  }
+                }}
                 className={`border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-colors ${
                   isDragging
                     ? "border-blue-500 bg-blue-500/10"
@@ -399,10 +401,10 @@ export default function CreatePage() {
         )}
 
         {/* Model Selector */}
-        <div className="mb-8">
-          <label className="text-sm font-medium text-gray-300 mb-3 block">Model</label>
+        <fieldset className="mb-8">
+          <legend className="text-sm font-medium text-gray-300 mb-3 block">Model</legend>
           <div className="flex gap-4">
-            <label
+            <div
               className={`flex-1 flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${
                 model === "Marble 0.1-mini"
                   ? "border-blue-500 bg-blue-500/10"
@@ -410,6 +412,7 @@ export default function CreatePage() {
               }`}
             >
               <input
+                id="model-mini"
                 type="radio"
                 name="model"
                 value="Marble 0.1-mini"
@@ -417,12 +420,12 @@ export default function CreatePage() {
                 onChange={() => setModel("Marble 0.1-mini")}
                 className="mt-1 accent-blue-500"
               />
-              <div>
+              <label htmlFor="model-mini" className="cursor-pointer">
                 <div className="font-medium text-sm">Draft</div>
                 <div className="text-gray-400 text-xs mt-0.5">~30 seconds, lower cost</div>
-              </div>
-            </label>
-            <label
+              </label>
+            </div>
+            <div
               className={`flex-1 flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${
                 model === "Marble 0.1-plus"
                   ? "border-blue-500 bg-blue-500/10"
@@ -430,6 +433,7 @@ export default function CreatePage() {
               }`}
             >
               <input
+                id="model-plus"
                 type="radio"
                 name="model"
                 value="Marble 0.1-plus"
@@ -437,13 +441,13 @@ export default function CreatePage() {
                 onChange={() => setModel("Marble 0.1-plus")}
                 className="mt-1 accent-blue-500"
               />
-              <div>
+              <label htmlFor="model-plus" className="cursor-pointer">
                 <div className="font-medium text-sm">Plus</div>
                 <div className="text-gray-400 text-xs mt-0.5">~5 minutes, higher quality</div>
-              </div>
-            </label>
+              </label>
+            </div>
           </div>
-        </div>
+        </fieldset>
 
         {/* Submit */}
         <button

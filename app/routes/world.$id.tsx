@@ -1,9 +1,19 @@
-import type { MetaFunction, LoaderFunctionArgs } from "react-router";
-import { useLoaderData } from "react-router";
-import { data } from "react-router";
+import { useEffect, useState } from "react";
+import {
+  data,
+  useLoaderData,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+} from "react-router";
 import { ClientOnly } from "remix-utils/client-only";
 import SparkCanvas from "~/components/spark-canvas";
 import ViewerHUD from "~/components/viewer-hud";
+import type {
+  CameraPath,
+  CameraPathAction,
+  CameraPathStatus,
+} from "~/lib/camera-path";
+import { createEmptyCameraPathStatus } from "~/lib/camera-path";
 import { getWorldById } from "~/lib/worlds-store";
 import { scenes } from "~/scenes";
 
@@ -106,6 +116,24 @@ function LoadingFallback() {
 
 export default function WorldViewer() {
   const world = useLoaderData<typeof loader>();
+  const [cameraPath, setCameraPath] = useState<CameraPath | null>(null);
+  const [cameraPathStatus, setCameraPathStatus] = useState<CameraPathStatus>(
+    createEmptyCameraPathStatus()
+  );
+  const [cameraPathAction, setCameraPathAction] = useState<CameraPathAction | null>(null);
+
+  useEffect(() => {
+    setCameraPath(null);
+    setCameraPathStatus(createEmptyCameraPathStatus());
+    setCameraPathAction(null);
+  }, [world.id]);
+
+  function dispatchCameraPathAction(actionType: CameraPathAction["type"]) {
+    setCameraPathAction({
+      id: Date.now(),
+      type: actionType,
+    });
+  }
 
   return (
     <div className="relative w-full h-screen bg-gray-900">
@@ -119,11 +147,17 @@ export default function WorldViewer() {
                 cameraUp={world.cameraUp}
                 cameraLookAt={world.cameraLookAt}
                 className="w-full h-full"
+                cameraPathAction={cameraPathAction}
+                onCameraPathChange={setCameraPath}
+                onCameraPathStatusChange={setCameraPathStatus}
               />
             ) : (
               <SparkCanvas
                 url={world.splatUrl}
                 className="w-full h-full"
+                cameraPathAction={cameraPathAction}
+                onCameraPathChange={setCameraPath}
+                onCameraPathStatusChange={setCameraPathStatus}
               />
             )}
             <ViewerHUD
@@ -132,6 +166,13 @@ export default function WorldViewer() {
               model={world.model}
               createdAt={world.createdAt}
               isSample={world.isSample}
+              cameraPath={cameraPath}
+              cameraPathStatus={cameraPathStatus}
+              onStartCameraPathRecording={() => dispatchCameraPathAction("start-recording")}
+              onStopCameraPathRecording={() => dispatchCameraPathAction("stop-recording")}
+              onPlayCameraPath={() => dispatchCameraPathAction("play")}
+              onStopCameraPathPlayback={() => dispatchCameraPathAction("stop-playback")}
+              onClearCameraPath={() => dispatchCameraPathAction("clear")}
             />
           </>
         )}

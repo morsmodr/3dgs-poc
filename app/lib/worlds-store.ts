@@ -7,7 +7,7 @@
 
 import { promises as fs } from "fs";
 import path from "path";
-import type { World, MarbleModel, WorldPrompt } from "./marble-client";
+import type { World, MarbleModel } from "./marble-client";
 
 const DATA_DIR = path.join(process.cwd(), "data");
 const WORLDS_FILE = path.join(DATA_DIR, "worlds.json");

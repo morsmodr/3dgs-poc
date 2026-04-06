@@ -1,7 +1,6 @@
 import { data, type LoaderFunctionArgs } from "react-router";
 import { getOperationStatus } from "~/lib/marble-client";
 import {
-  getWorldByOperationId,
   updateWorldFromOperation,
   markWorldFailed,
 } from "~/lib/worlds-store";

@@ -1,3 +1,4 @@
+/* eslint-env node */
 import { createRequestHandler } from "@react-router/express";
 import express from "express";
 

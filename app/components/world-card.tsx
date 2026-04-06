@@ -83,61 +83,64 @@ export default function WorldCard({
 
   return (
     <div className="relative">
-      <Link
-        to={linkTo}
+      <div
         className={`group relative block aspect-[16/10] rounded-xl overflow-hidden border border-gray-700/50 hover:border-blue-500/70 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-500/10 ${
           isDeleting ? "opacity-50 pointer-events-none" : ""
         }`}
       >
-        {/* Background: thumbnail or gradient placeholder */}
-        {thumbnail ? (
-          <img
-            src={thumbnail}
-            alt={title}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div
-            className={`absolute inset-0 ${
-              isSample
-                ? "bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900"
-                : "bg-gradient-to-br from-indigo-900/50 via-gray-800 to-gray-900"
-            }`}
-          >
-            {/* Decorative pattern for sample scenes */}
-            {isSample && (
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-4 right-4 w-24 h-24 border border-gray-500 rounded-full" />
-                <div className="absolute bottom-8 left-6 w-16 h-16 border border-gray-500 rounded-lg rotate-12" />
-              </div>
-            )}
-          </div>
-        )}
+        <Link
+          to={linkTo}
+          className="absolute inset-0 z-0 rounded-xl outline-none ring-offset-2 ring-offset-gray-900 focus-visible:ring-2 focus-visible:ring-blue-500"
+          aria-label={`View world: ${title}`}
+        />
 
-        {/* Gradient overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent" />
+        {/* Background: thumbnail or gradient placeholder (clicks pass through to Link) */}
+        <div className="absolute inset-0 z-[1] pointer-events-none">
+          {thumbnail ? (
+            <img
+              src={thumbnail}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <div
+              className={`absolute inset-0 ${
+                isSample
+                  ? "bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900"
+                  : "bg-gradient-to-br from-indigo-900/50 via-gray-800 to-gray-900"
+              }`}
+            >
+              {isSample && (
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute top-4 right-4 w-24 h-24 border border-gray-500 rounded-full" />
+                  <div className="absolute bottom-8 left-6 w-16 h-16 border border-gray-500 rounded-lg rotate-12" />
+                </div>
+              )}
+            </div>
+          )}
 
-        {/* Sample badge */}
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent" />
+        </div>
+
         {isSample && (
-          <div className="absolute top-3 left-3 px-2 py-0.5 text-xs font-medium bg-gray-700/80 text-gray-300 rounded border border-gray-600/50 backdrop-blur-sm">
+          <div className="absolute top-3 left-3 z-[1] px-2 py-0.5 text-xs font-medium bg-gray-700/80 text-gray-300 rounded border border-gray-600/50 backdrop-blur-sm pointer-events-none">
             Sample
           </div>
         )}
 
-        {/* Model badge for generated worlds */}
         {badge && (
           <div
-            className={`absolute top-3 right-3 px-2 py-0.5 text-xs font-medium rounded border backdrop-blur-sm ${badge.className}`}
+            className={`absolute top-3 right-3 z-[1] px-2 py-0.5 text-xs font-medium rounded border backdrop-blur-sm pointer-events-none ${badge.className}`}
           >
             {badge.label}
           </div>
         )}
 
-        {/* Delete button - only for non-sample worlds with onDelete handler */}
         {!isSample && onDelete && !showConfirm && (
           <button
+            type="button"
             onClick={handleDeleteClick}
-            className="absolute top-3 left-3 p-1.5 bg-red-600/80 hover:bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity backdrop-blur-sm z-10"
+            className="absolute top-3 left-3 z-[2] p-1.5 bg-red-600/80 hover:bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity backdrop-blur-sm"
             title="Delete world"
           >
             <svg
@@ -156,8 +159,7 @@ export default function WorldCard({
           </button>
         )}
 
-        {/* Content */}
-        <div className="absolute bottom-0 left-0 right-0 p-4">
+        <div className="absolute bottom-0 left-0 right-0 p-4 z-[1] pointer-events-none">
           <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-blue-300 transition-colors line-clamp-1">
             {title}
           </h3>
@@ -181,7 +183,7 @@ export default function WorldCard({
             </span>
           </div>
         </div>
-      </Link>
+      </div>
 
       {/* Confirmation dialog overlay */}
       {showConfirm && (
