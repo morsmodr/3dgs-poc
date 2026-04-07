@@ -1,8 +1,26 @@
 import { useState, useEffect, useCallback } from "react";
-import type { MetaFunction } from "react-router";
+import { data, useLoaderData, type MetaFunction } from "react-router";
 import { Link } from "react-router";
 import { scenes } from "~/scenes";
+import { proxyUrl } from "~/lib/proxy-url.server";
 import WorldCard from "~/components/world-card";
+
+interface SampleScene {
+  key: string;
+  title: string;
+  thumbnail?: string;
+}
+
+export async function loader() {
+  const sampleScenes: SampleScene[] = Object.entries(scenes).map(
+    ([key, scene]) => ({
+      key,
+      title: scene.title,
+      thumbnail: proxyUrl(scene.thumbnail),
+    })
+  );
+  return data({ sampleScenes });
+}
 
 interface StoredWorld {
   id: string;
@@ -84,6 +102,7 @@ function EmptyState() {
 }
 
 export default function Index() {
+  const { sampleScenes } = useLoaderData<typeof loader>();
   const [worlds, setWorlds] = useState<StoredWorld[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -126,8 +145,6 @@ export default function Index() {
       setDeletingId(null);
     }
   };
-
-  const sampleScenes = Object.entries(scenes);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
@@ -207,12 +224,13 @@ export default function Index() {
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sampleScenes.map(([key, scene]) => (
+            {sampleScenes.map((scene) => (
               <WorldCard
-                key={key}
-                id={key}
+                key={scene.key}
+                id={scene.key}
                 title={scene.title}
-                linkTo={`/world/${key}`}
+                thumbnail={scene.thumbnail}
+                linkTo={`/world/${scene.key}`}
                 isSample
               />
             ))}

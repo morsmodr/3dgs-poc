@@ -1,6 +1,7 @@
 export interface SceneConfig {
     title: string;
     url: string;
+    thumbnail?: string;
     cameraUp: [number, number, number];
     initialCameraPosition: [number, number, number];
     initialCameraLookAt: [number, number, number];
@@ -8,44 +9,28 @@ export interface SceneConfig {
 }
 
 export const scenes: Record<string, SceneConfig> = {
-    bonsai: {
-        title: "Bonsai",
-        url: "https://huggingface.co/datasets/nerfbaselines/nerfbaselines-supplementary/resolve/main/gaussian-splatting/mipnerf360/bonsai_demo/scene.ksplat",
-        cameraUp: [0.01933, -0.75830, -0.65161],
-        initialCameraPosition: [1.54163, 2.68515, -6.37228],
-        initialCameraLookAt: [0.45622, 1.95338, 1.51278],
-        sphericalHarmonicsDegree: 2,
-    },
-    palace: {
-        title: "Palace",
-        url: "https://huggingface.co/datasets/nerfbaselines/nerfbaselines-supplementary/resolve/main/gaussian-splatting/tanksandtemples/palace_demo/scene.ksplat",
+    "tea-house": {
+        title: "Tea House",
+        url: "https://cdn.marble.worldlabs.ai/ae489370-896d-4abb-8f8e-77cb91fa4556/a3cd63ef-4ec2-4ab3-8992-fff02c44bd68_ceramic.spz",
+        thumbnail: "https://cdn.marble.worldlabs.ai/ae489370-896d-4abb-8f8e-77cb91fa4556/c73f3466-d1ec-4f27-93cd-5955b8e1837b_panos/rgb_0.png",
         cameraUp: [0, -1, 0],
-        initialCameraPosition: [0, 2, 5],
+        initialCameraPosition: [0, 0, -0.5],
         initialCameraLookAt: [0, 0, 0],
-        sphericalHarmonicsDegree: 2,
     },
-    garden: {
-        title: "Garden",
-        url: "https://huggingface.co/datasets/nerfbaselines/nerfbaselines-supplementary/resolve/main/gaussian-splatting/mipnerf360/garden_demo/scene.ksplat",
-        cameraUp: [0, -1, -0.54],
-        initialCameraPosition: [-3.15634, -0.16946, -0.51552],
-        initialCameraLookAt: [1.52976, 2.27776, 1.65898],
-        sphericalHarmonicsDegree: 2,
-    },
-    truck: {
-        title: "Truck",
-        url: "https://huggingface.co/datasets/nerfbaselines/nerfbaselines-supplementary/resolve/main/gaussian-splatting/tanksandtemples/truck_demo/scene.ksplat",
-        cameraUp: [0, -1, -0.17],
-        initialCameraPosition: [-5, -1, -1],
-        initialCameraLookAt: [-1.72477, 0.05395, -0.00147],
-        sphericalHarmonicsDegree: 2,
-    },
-    train: {
-        title: "Train",
-        url: "https://huggingface.co/datasets/nerfbaselines/nerfbaselines-supplementary/resolve/main/gaussian-splatting/tanksandtemples/train_demo/scene.ksplat",
+    temple: {
+        title: "Temple Ruins",
+        url: "https://cdn.marble.worldlabs.ai/fa8267dd-aee1-4828-bcf3-87864fdd4c8a/e3c1fa55-a24b-4462-ae53-39cd0eee1dea_ceramic.spz",
+        thumbnail: "https://cdn.marble.worldlabs.ai/fa8267dd-aee1-4828-bcf3-87864fdd4c8a/8f322ae5-a04b-4683-b1db-16fa3b995e69_panos/rgb_0.png",
         cameraUp: [0, -1, 0],
-        initialCameraPosition: [0, 2, 5],
+        initialCameraPosition: [0, 0, -0.5],
         initialCameraLookAt: [0, 0, 0],
-        sphericalHarmonicsDegree: 2,
+    },
+    cyberpunk: {
+        title: "Cyberpunk Alley",
+        url: "https://cdn.marble.worldlabs.ai/4e350772-83a0-425c-b92c-8972299f57e6/f7483312-b5db-4559-a1e6-4b6850340192_ceramic.spz",
+        thumbnail: "https://cdn.marble.worldlabs.ai/4e350772-83a0-425c-b92c-8972299f57e6/3f33d497-57eb-468d-bb15-f886733b255e_panos/rgb_0.png",
+        cameraUp: [0, -1, 0],
+        initialCameraPosition: [0, 0, -0.5],
+        initialCameraLookAt: [0, 0, 0],
     },
 };
