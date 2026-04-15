@@ -3,11 +3,12 @@ import { useNavigate } from "react-router";
 import { ClientOnly } from "remix-utils/client-only";
 import type { CameraPath, CameraPathStatus } from "~/lib/camera-path";
 import { formatCameraPathDuration } from "~/lib/camera-path";
+import type { MarbleModel } from "~/lib/marble-client";
 
 interface ViewerHUDProps {
   title: string;
   prompt?: string;
-  model?: "Marble 0.1-mini" | "Marble 0.1-plus";
+  model?: MarbleModel;
   createdAt?: string;
   isSample?: boolean;
   cameraPath?: CameraPath | null;
@@ -36,15 +37,15 @@ function formatRelativeTime(isoString: string): string {
   return date.toLocaleDateString();
 }
 
-function getModelBadge(model: "Marble 0.1-mini" | "Marble 0.1-plus") {
-  if (model === "Marble 0.1-mini") {
+function getModelBadge(model: MarbleModel) {
+  if (model === "marble-1.1") {
     return {
-      label: "Draft",
+      label: "Marble 1.1",
       className: "bg-blue-500/20 text-blue-300 border-blue-500/30",
     };
   }
   return {
-    label: "Plus",
+    label: "Marble 1.1 Plus",
     className: "bg-purple-500/20 text-purple-300 border-purple-500/30",
   };
 }

@@ -30,7 +30,7 @@ export default function CreatePage() {
   const [pageState, setPageState] = useState<PageState>("idle");
   const [activeTab, setActiveTab] = useState<PromptTab>("text");
   const [textPrompt, setTextPrompt] = useState("");
-  const [model, setModel] = useState<MarbleModel>("Marble 0.1-mini");
+  const [model, setModel] = useState<MarbleModel>("marble-1.1");
   const [imageData, setImageData] = useState<{
     base64: string;
     extension: string;
@@ -213,7 +213,7 @@ export default function CreatePage() {
               <p className="text-gray-400 text-sm">
                 {pageState === "completed"
                   ? "Redirecting to gallery..."
-                  : model === "Marble 0.1-plus"
+                  : model === "marble-1.1-plus"
                     ? "This may take up to 5 minutes"
                     : "This usually takes about 30 seconds"}
               </p>
@@ -406,7 +406,7 @@ export default function CreatePage() {
           <div className="flex gap-4">
             <div
               className={`flex-1 flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${
-                model === "Marble 0.1-mini"
+                model === "marble-1.1"
                   ? "border-blue-500 bg-blue-500/10"
                   : "border-gray-700 bg-gray-800/40 hover:border-gray-600"
               }`}
@@ -415,19 +415,19 @@ export default function CreatePage() {
                 id="model-mini"
                 type="radio"
                 name="model"
-                value="Marble 0.1-mini"
-                checked={model === "Marble 0.1-mini"}
-                onChange={() => setModel("Marble 0.1-mini")}
+                value="marble-1.1"
+                checked={model === "marble-1.1"}
+                onChange={() => setModel("marble-1.1")}
                 className="mt-1 accent-blue-500"
               />
               <label htmlFor="model-mini" className="cursor-pointer">
-                <div className="font-medium text-sm">Draft</div>
-                <div className="text-gray-400 text-xs mt-0.5">~30 seconds, lower cost</div>
+                <div className="font-medium text-sm">Marble 1.1</div>
+                <div className="text-gray-400 text-xs mt-0.5">1,500 credits</div>
               </label>
             </div>
             <div
               className={`flex-1 flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-colors ${
-                model === "Marble 0.1-plus"
+                model === "marble-1.1-plus"
                   ? "border-blue-500 bg-blue-500/10"
                   : "border-gray-700 bg-gray-800/40 hover:border-gray-600"
               }`}
@@ -436,14 +436,14 @@ export default function CreatePage() {
                 id="model-plus"
                 type="radio"
                 name="model"
-                value="Marble 0.1-plus"
-                checked={model === "Marble 0.1-plus"}
-                onChange={() => setModel("Marble 0.1-plus")}
+                value="marble-1.1-plus"
+                checked={model === "marble-1.1-plus"}
+                onChange={() => setModel("marble-1.1-plus")}
                 className="mt-1 accent-blue-500"
               />
               <label htmlFor="model-plus" className="cursor-pointer">
-                <div className="font-medium text-sm">Plus</div>
-                <div className="text-gray-400 text-xs mt-0.5">~5 minutes, higher quality</div>
+                <div className="font-medium text-sm">Marble 1.1 Plus</div>
+                <div className="text-gray-400 text-xs mt-0.5">Base - 1,500 credits plus 0-1,500 credits variable cost determined by Marble system</div>
               </label>
             </div>
           </div>

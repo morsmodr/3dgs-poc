@@ -9,7 +9,7 @@ import { scenes } from "~/scenes";
 
 const MARBLE_API_BASE = "https://api.worldlabs.ai";
 
-export type MarbleModel = "Marble 0.1-mini" | "Marble 0.1-plus";
+export type MarbleModel = "marble-1.1" | "marble-1.1-plus";
 
 export type OperationStatus = "PENDING" | "RUNNING" | "SUCCEEDED" | "FAILED";
 
@@ -149,7 +149,7 @@ export async function generateWorld(
     mockOperations.set(operationId, {
       startTime: Date.now(),
       prompt,
-      model: request.model || "Marble 0.1-plus",
+      model: request.model || "marble-1.1",
     });
 
     const now = new Date().toISOString();

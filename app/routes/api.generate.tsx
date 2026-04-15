@@ -34,7 +34,7 @@ export async function action({ request }: ActionFunctionArgs) {
       );
     }
 
-    const model: MarbleModel = body.model || "Marble 0.1-mini";
+    const model: MarbleModel = body.model || "marble-1.1";
 
     let apiRequest: GenerateWorldRequest;
 

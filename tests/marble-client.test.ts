@@ -18,7 +18,7 @@ describe("marble-client mock mode", () => {
         type: "text",
         text_prompt: "A cinematic mountain observatory at sunrise",
       },
-      model: "Marble 0.1-mini",
+      model: "marble-1.1",
     });
 
     expect(generation.done).toBe(false);
@@ -39,7 +39,7 @@ describe("marble-client mock mode", () => {
       progress: 100,
       status: "SUCCEEDED",
     });
-    expect(completed.response?.model).toBe("Marble 0.1-mini");
+    expect(completed.response?.model).toBe("marble-1.1");
     expect(completed.response?.assets?.splats?.spz_urls?.full_res).toBeTruthy();
     expect(completed.response?.world_prompt).toMatchObject({
       type: "text",

@@ -65,7 +65,7 @@ describe("api.generate action", () => {
           promptType: "image",
           imageBase64: "ZmFrZS1pbWFnZS1ieXRlcw==",
           imageExtension: "png",
-          model: "Marble 0.1-plus",
+          model: "marble-1.1-plus",
           displayName: "Moonlit cliffs",
         }),
       }),
@@ -89,7 +89,7 @@ describe("api.generate action", () => {
         text_prompt: "Foggy cliffs over a moonlit sea",
         is_pano: false,
       },
-      model: "Marble 0.1-plus",
+      model: "marble-1.1-plus",
       display_name: "Moonlit cliffs",
       permission: { public: false },
     });
@@ -98,7 +98,7 @@ describe("api.generate action", () => {
       operationId: "mock-op-123",
       prompt: "Foggy cliffs over a moonlit sea",
       promptType: "image",
-      model: "Marble 0.1-plus",
+      model: "marble-1.1-plus",
     });
 
     expect(response.data).toEqual({

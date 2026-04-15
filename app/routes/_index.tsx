@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { data, useLoaderData, type MetaFunction } from "react-router";
 import { Link } from "react-router";
+import type { MarbleModel } from "~/lib/marble-client";
 import { scenes } from "~/scenes";
 import { proxyUrl } from "~/lib/proxy-url.server";
 import WorldCard from "~/components/world-card";
@@ -27,7 +28,7 @@ interface StoredWorld {
   operationId: string;
   prompt: string;
   promptType: "text" | "image";
-  model: "Marble 0.1-mini" | "Marble 0.1-plus";
+  model: MarbleModel;
   status: "pending" | "generating" | "completed" | "failed";
   splatUrl?: string;
   panoUrl?: string;

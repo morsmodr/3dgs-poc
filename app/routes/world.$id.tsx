@@ -14,6 +14,7 @@ import type {
   CameraPathStatus,
 } from "~/lib/camera-path";
 import { createEmptyCameraPathStatus } from "~/lib/camera-path";
+import type { MarbleModel } from "~/lib/marble-client";
 import { getWorldById } from "~/lib/worlds-store";
 import { scenes } from "~/scenes";
 
@@ -21,7 +22,7 @@ interface WorldData {
   id: string;
   title: string;
   prompt?: string;
-  model?: "Marble 0.1-mini" | "Marble 0.1-plus";
+  model?: MarbleModel;
   splatUrl: string;
   panoUrl?: string;
   thumbnailUrl?: string;
